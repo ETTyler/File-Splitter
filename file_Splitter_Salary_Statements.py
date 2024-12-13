@@ -18,9 +18,19 @@ def extract_names_and_pages(pdf_document):
             line = lines[2].strip()
             name = line.split(":")
             name = name[1].strip()
-            print(name)
-            name_pages[name] = []
-            name_pages[name].append(page_num)
+            school = lines[3].strip()
+            school = school.split(":")
+            school = school[1].strip()
+            if name in name_pages:
+                line = lines[5].strip()
+                tlr = line.split(":")
+                tlr = tlr[1].strip()
+                name = name + " " + tlr
+                name_pages[name] = []
+                name_pages[name].append(page_num)
+            else:
+                name_pages[name] = []
+                name_pages[name].append(page_num)
     return name_pages
 
 
@@ -44,7 +54,7 @@ def split_pdf(input_pdf_path, output_dir):
             writer.add_page(pdf_reader.pages[page_num])
         # Sanitize the name for use in filenames
         safe_name = re.sub(r"[^\w\s-]", "", name).strip().replace(" ", "_")
-        output_pdf_path = os.path.join(output_dir, f"{safe_name}.pdf")
+        output_pdf_path = os.path.join(output_dir, f"{safe_name}_23-24.pdf")
         with open(output_pdf_path, "wb") as output_pdf_file:
             writer.write(output_pdf_file)
             print(f"Created {output_pdf_path}")
